@@ -23,53 +23,48 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
+// powerbi.extensibility.utils.formatting
+import {removeBreakingSpaces, removeEllipses, replaceSpaceWithNBSP} from "../src/textUtil";
 
-/// <reference path="_references.ts" />
+describe("textUtil", () => {
+    describe("removeBreakingSpaces", () => {
+        it("should replace white spaces", () => {
+            const strWithWhitespace: string = " Power BI",
+                expectedValue: string = "&nbspPower&nbspBI";
 
-module powerbi.extensibility.utils.formatting.textUtil.test {
-    // powerbi.extensibility.utils.formatting
-    import textUtil = powerbi.extensibility.utils.formatting.textUtil;
+            const actualValue: string = removeBreakingSpaces(strWithWhitespace);
 
-    describe("textUtil", () => {
-        describe("removeBreakingSpaces", () => {
-            it("should replace white spaces", () => {
-                const strWithWhitespace: string = " Power BI",
-                    expectedValue: string = "&nbspPower&nbspBI";
-
-                const actualValue: string = textUtil.removeBreakingSpaces(strWithWhitespace);
-
-                expect(actualValue).toBe(expectedValue);
-            });
-        });
-
-        describe("removeEllipses", () => {
-            it("should remove the dots at ending of the strings", () => {
-                const strWithDots: string = "Power BI...",
-                    expectedValue: string = "Power BI";
-
-                const actualValue: string = textUtil.removeEllipses(strWithDots);
-
-                expect(actualValue).toBe(expectedValue);
-            });
-        });
-
-        describe("replaceSpaceWithNBSP", () => {
-            it("should return undefined if the given string is undefined", () => {
-                const expectedValue: string = undefined;
-
-                const actualValue: string = textUtil.replaceSpaceWithNBSP(expectedValue);
-
-                expect(actualValue).toBe(expectedValue);
-            });
-
-            it("should replace white spaces", () => {
-                const strWithWhitespace: string = "Power BI",
-                    expectedValue: string = "Power\xA0BI";
-
-                const actualValue: string = textUtil.replaceSpaceWithNBSP(strWithWhitespace);
-
-                expect(actualValue).toBe(expectedValue);
-            });
+            expect(actualValue).toBe(expectedValue);
         });
     });
-}
+
+    describe("removeEllipses", () => {
+        it("should remove the dots at ending of the strings", () => {
+            const strWithDots: string = "Power BI...",
+                expectedValue: string = "Power BI";
+
+            const actualValue: string = removeEllipses(strWithDots);
+
+            expect(actualValue).toBe(expectedValue);
+        });
+    });
+
+    describe("replaceSpaceWithNBSP", () => {
+        it("should return undefined if the given string is undefined", () => {
+            const expectedValue: string = undefined;
+
+            const actualValue: string = replaceSpaceWithNBSP(expectedValue);
+
+            expect(actualValue).toBe(expectedValue);
+        });
+
+        it("should replace white spaces", () => {
+            const strWithWhitespace: string = "Power BI",
+                expectedValue: string = "Power\xA0BI";
+
+            const actualValue: string = replaceSpaceWithNBSP(strWithWhitespace);
+
+            expect(actualValue).toBe(expectedValue);
+        });
+    });
+});

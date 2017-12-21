@@ -23,60 +23,52 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
+// powerbi.extensibility.utils.formatting
+import {DateFormat, findDateFormat, fixDateTimeFormat } from "../src/formatting";
+describe("fixDateTimeFormat", () => {
+    it("should return a format without percentage", () => {
+        const format: string = "%d%F",
+            expectedFormat: string = "dF";
 
-/// <reference path="_references.ts" />
+        const actualFormat: string = fixDateTimeFormat(format);
 
-module powerbi.extensibility.utils.formatting.test {
-    // powerbi.extensibility.utils.formatting
-    import DateFormat = powerbi.extensibility.utils.formatting.DateFormat;
-    import findDateFormat = powerbi.extensibility.utils.formatting.findDateFormat;
-    import fixDateTimeFormat = powerbi.extensibility.utils.formatting.fixDateTimeFormat;
-
-    describe("fixDateTimeFormat", () => {
-        it("should return a format without percentage", () => {
-            const format: string = "%d%F",
-                expectedFormat: string = "dF";
-
-            const actualFormat: string = fixDateTimeFormat(format);
-
-            expect(actualFormat).toBe(expectedFormat);
-        });
+        expect(actualFormat).toBe(expectedFormat);
     });
+});
 
-    describe("findDateFormat", () => {
-        const defaultCultureName: string = "default",
-            formats: string[] = [
-                "m",
-                "O",
-                "o",
-                "R",
-                "r",
-                "s",
-                "u",
-                "U",
-                "y",
-                "Y"
-            ];
+describe("findDateFormat", () => {
+    const defaultCultureName: string = "default",
+        formats: string[] = [
+            "m",
+            "O",
+            "o",
+            "R",
+            "r",
+            "s",
+            "u",
+            "U",
+            "y",
+            "Y"
+        ];
 
-        for (let format of formats) {
-            it(`should change the format if format is ${format}`, () => {
-                checkResultFormat(
-                    format,
-                    format === "y"
-                        ? undefined
-                        : defaultCultureName);
-            });
-        }
-
-        function checkResultFormat(format: string, cultureName: string): void {
-            const date: Date = new Date(2017, 1, 1);
-
-            const actualFormat: DateFormat = findDateFormat(
-                date,
+    for (let format of formats) {
+        it(`should change the format if format is ${format}`, () => {
+            checkResultFormat(
                 format,
-                cultureName);
+                format === "y"
+                    ? undefined
+                    : defaultCultureName);
+        });
+    }
 
-            expect(actualFormat.format).not.toBe(format);
-        }
-    });
-}
+    function checkResultFormat(format: string, cultureName: string): void {
+        const date: Date = new Date(2017, 1, 1);
+
+        const actualFormat: DateFormat = findDateFormat(
+            date,
+            format,
+            cultureName);
+
+        expect(actualFormat.format).not.toBe(format);
+    }
+});

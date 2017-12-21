@@ -24,7 +24,11 @@
  *  THE SOFTWARE.
  */
 
-'use strict';
+"use strict";
+
+import * as webpack from "webpack";
+
+import { Config, ConfigOptions } from "karma";
 
 const testRecursivePath = 'test/**/*.ts'
     , srcOriginalRecursivePath = 'src/**/*.ts'
@@ -32,7 +36,7 @@ const testRecursivePath = 'test/**/*.ts'
     , srcCssRecursivePath = 'lib/**/*.css'
     , coverageFolder = 'coverage';
 
-module.exports = (config) => {
+module.exports = (config: Config) => {
     let browsers = [];
 
     if (process.env.TRAVIS) {
@@ -41,7 +45,7 @@ module.exports = (config) => {
         browsers.push('Chrome');
     }
 
-    config.set({
+    config.set(<ConfigOptions>{
         customLaunchers: {
             ChromeTravisCI: {
                 base: 'Chrome',
@@ -53,8 +57,8 @@ module.exports = (config) => {
         frameworks: ['jasmine'],
         reporters: [
             'progress',
-            'coverage',
-            'karma-remap-istanbul'
+            //'coverage',
+            //'karma-remap-istanbul'
         ],
         singleRun: true,
         files: [
@@ -63,10 +67,10 @@ module.exports = (config) => {
             "node_modules/globalize/lib/globalize.js",
             "node_modules/globalize/lib/cultures/globalize.cultures.js",
             'node_modules/jasmine-jquery/lib/jasmine-jquery.js',
-            'node_modules/powerbi-visuals-utils-typeutils/lib/index.js',
-            'node_modules/powerbi-visuals-utils-svgutils/lib/index.js',
-            'node_modules/powerbi-visuals-utils-testutils/lib/index.js',
-            'node_modules/powerbi-visuals-utils-dataviewutils/lib/index.js',
+            "node_modules/powerbi-visuals-utils-typeutils/lib/**/*.js",
+            "node_modules/powerbi-visuals-utils-testutils/lib/**/*.js",
+            "node_modules/powerbi-visuals-utils-svgutils/lib/**/*.js",
+            "node_modules/powerbi-visuals-utils-dataviewutils/**/*.js",
             srcCssRecursivePath,
             srcRecursivePath,
             testRecursivePath,
@@ -77,16 +81,41 @@ module.exports = (config) => {
             }
         ],
         preprocessors: {
-            [testRecursivePath]: ['typescript'],
-            [srcRecursivePath]: ['sourcemap', 'coverage']
+            "node_modules/powerbi-visuals-utils-testutils/lib/**/*.js": ["webpack"],
+            "node_modules/powerbi-visuals-utils-typeutils/lib/**/*.js": ["webpack"],
+            "node_modules/powerbi-visuals-utils-dataviewutils/lib/**/*.js": ["webpack"],
+            "node_modules/powerbi-visuals-utils-svgutils/lib/**/*.js": ["webpack"],
+            [testRecursivePath]: ['typescript', "webpack"],
+            [srcRecursivePath]: ["webpack",'sourcemap'] //, 'coverage'
         },
-        typescriptPreprocessor: {
-            options: {
-                sourceMap: false,
-                target: 'ES5',
-                removeComments: false,
-                concatenateOutput: false
-            }
+        webpack: <webpack.Configuration>{
+            target: "web",
+            devtool: "inline-source-map",
+            resolve: {
+                extensions: [".webpack.js", ".web.js", ".js", ".ts", ".tsx"]
+            },
+            externals: [
+                {
+                    sinon: "sinon",
+                    chai: "chai"
+                },
+            ],
+            module: {
+                rules: [
+                    {
+                        test: /\.jsx?$/,
+                    },
+                    {
+                        test: /\.tsx?$/,
+                        loader: "ts-loader",
+                    }
+                ]
+            },
+            output: {
+                filename: "index.build.js"
+            },
+            plugins: [
+            ]
         },
         coverageReporter: {
             dir: coverageFolder,

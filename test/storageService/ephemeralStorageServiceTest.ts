@@ -24,44 +24,40 @@
  *  THE SOFTWARE.
  */
 
-/// <reference path="../_references.ts" />
+import {EphemeralStorageService} from "../../src/storageService/ephemeralStorageService";
 
-module powerbi.extensibility.utils.formatting.test {
-    import EphemeralStorageService = powerbi.extensibility.utils.formatting.EphemeralStorageService;
+describe("Ephemeral Storage Service", () => {
+    it("get with existing key retrieves data", () => {
+        let storage = new EphemeralStorageService();
 
-    describe("Ephemeral Storage Service", () => {
-        it("get with existing key retrieves data", () => {
-            let storage = new EphemeralStorageService();
+        storage.setData("key", "value");
 
-            storage.setData("key", "value");
+        let value = storage.getData("key");
 
-            let value = storage.getData("key");
-
-            expect(value).toBe("value");
-        });
-
-        it("get with non-existing key returns null", () => {
-            let storage = new EphemeralStorageService();
-
-            storage.setData("key1", "value");
-
-            let value = storage.getData("key2");
-
-            expect(value == null).toBeTruthy();
-        });
-
-        it("cache is cleared after interval", (done) => {
-            let timeout = 10;
-            let storage = new EphemeralStorageService(timeout);
-
-            storage.setData("key", "value");
-
-            setTimeout(() => {
-                // cache should be cleared by now
-                let value = storage.getData("key");
-                expect(value == null).toBeTruthy();
-                done();
-            }, timeout + 10);
-        });
+        expect(value).toBe("value");
     });
-}
+
+    it("get with non-existing key returns null", () => {
+        let storage = new EphemeralStorageService();
+
+        storage.setData("key1", "value");
+
+        let value = storage.getData("key2");
+
+        expect(value == null).toBeTruthy();
+    });
+
+    it("cache is cleared after interval", (done) => {
+        let timeout = 10;
+        let storage = new EphemeralStorageService(timeout);
+
+        storage.setData("key", "value");
+
+        setTimeout(() => {
+            // cache should be cleared by now
+            let value = storage.getData("key");
+            expect(value == null).toBeTruthy();
+            done();
+        }, timeout + 10);
+    });
+});

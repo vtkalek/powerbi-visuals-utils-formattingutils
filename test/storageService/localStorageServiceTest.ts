@@ -23,57 +23,52 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
+// powerbi.extensibility.utils.formatting
+import {IStorageService} from "../../src/storageService/iStorageService";
+import {LocalStorageService} from "../../src/storageService/localStorageService";
 
-/// <reference path="../_references.ts" />
+describe("LocalStorageService", () => {
+    describe("getData", () => {
+        it("should return null if local storage doesn't have data of the given key", () => {
+            const storageService: IStorageService = createLocalStorageService();
 
-module powerbi.extensibility.utils.formatting.test {
-    // powerbi.extensibility.utils.formatting
-    import IStorageService = powerbi.extensibility.utils.formatting.IStorageService;
-    import LocalStorageService = powerbi.extensibility.utils.formatting.LocalStorageService;
+            const actualData: any = storageService.getData("Power BI test key without any data");
 
-    describe("LocalStorageService", () => {
-        describe("getData", () => {
-            it("should return null if local storage doesn't have data of the given key", () => {
-                const storageService: IStorageService = createLocalStorageService();
-
-                const actualData: any = storageService.getData("Power BI test key without any data");
-
-                expect(actualData).toBeNull();
-            });
-
-            it("should return an object from the localStorage", () => {
-                const storageService: IStorageService = createLocalStorageService(),
-                    storageKey: string = "TestKey",
-                    data: any = { product: "Power BI" };
-
-                localStorage.setItem(storageKey, JSON.stringify(data));
-
-                const actualData: any = storageService.getData(storageKey);
-
-                expect(actualData).toBeDefined();
-
-                localStorage.removeItem(storageKey);
-            });
+            expect(actualData).toBeNull();
         });
 
-        describe("setData", () => {
-            it("should ", () => {
-                const storageService: IStorageService = createLocalStorageService(),
-                    storageKey: string = "TestKey",
-                    data: any = { product: "Power BI" };
+        it("should return an object from the localStorage", () => {
+            const storageService: IStorageService = createLocalStorageService(),
+                storageKey: string = "TestKey",
+                data: any = { product: "Power BI" };
 
-                storageService.setData(storageKey, data);
+            localStorage.setItem(storageKey, JSON.stringify(data));
 
-                const actualData: string = localStorage.getItem(storageKey);
+            const actualData: any = storageService.getData(storageKey);
 
-                expect(actualData).toBe(JSON.stringify(data));
+            expect(actualData).toBeDefined();
 
-                localStorage.removeItem(storageKey);
-            });
+            localStorage.removeItem(storageKey);
         });
-
-        function createLocalStorageService(): IStorageService {
-            return new LocalStorageService();
-        }
     });
-}
+
+    describe("setData", () => {
+        it("should ", () => {
+            const storageService: IStorageService = createLocalStorageService(),
+                storageKey: string = "TestKey",
+                data: any = { product: "Power BI" };
+
+            storageService.setData(storageKey, data);
+
+            const actualData: string = localStorage.getItem(storageKey);
+
+            expect(actualData).toBe(JSON.stringify(data));
+
+            localStorage.removeItem(storageKey);
+        });
+    });
+
+    function createLocalStorageService(): IStorageService {
+        return new LocalStorageService();
+    }
+});

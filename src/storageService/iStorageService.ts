@@ -23,10 +23,8 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-
-module powerbi.extensibility.utils.formatting {
-    export interface IStorageService {
-        getData(key: string): any;
-        setData(key: string, data: any): void;
-    }
+export interface IStorageService {
+    getData(key: string): any;
+    setData(key: string, data: any): void;
 }
+
